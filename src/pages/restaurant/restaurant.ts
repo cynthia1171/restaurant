@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the RestaurantPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { Restaurante } from '../../clases/restaurante';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { RestauranteService } from '../../servicios/restaurante.service';
 
 @IonicPage()
 @Component({
@@ -14,12 +10,30 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'restaurant.html',
 })
 export class RestaurantPage {
+  restaurante: Restaurante;
+  rid: number;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              public viewCtrl: ViewController,
+              private socialSharing: SocialSharing,
+              public restauranteService: RestauranteService) {
+    this.restaurante = navParams.get('restaurante');
+    this.rid = navParams.get('rid');        
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad RestaurantPage');
+  cerrar() {
+    this.viewCtrl.dismiss();
   }
 
+  borrar() {
+    this.restauranteService.borrarRestaurante(this.rid);
+    this.cerrar();
+  }
+
+  compratirWhatsapp() {
+    let mensaje = this.restaurante.nombre;
+    let url = "http://www.google.com/maps/@" + this.restaurante.ubicacion.lat + "," + this.restaurante.ubicacion.lng + ",13z?hl=es";
+    this.socialSharing.shareViaWhatsApp(mensaje, this.restaurante.imagenes[0], url);
+  }
 }

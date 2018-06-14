@@ -1,33 +1,65 @@
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>addRestaurant</ion-title>
+  <ion-navbar color="primary">
+    <ion-title>Agregar restaurante</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col col-8>
-        <ion-item>
-          <ion-label floating>Nombre</ion-label>
-          <ion-input type="text"></ion-input>
-        </ion-item>
-      </ion-col>
-      <ion-col>
-        <ion-row>
-          <button ion-button block>
-            <ion-icon name="camera"></ion-icon>
+  <form #formulario="ngForm" (ngSubmit)="agregarRestaurant(formulario)">
+    <ion-grid>
+      <ion-row>
+        <ion-col col-8>
+          <ion-item>
+            <ion-label floating>Nombre</ion-label>
+            <!-- ngModel para oder accederlo desde la aplicacion -->
+            <ion-input type="text" name="nombre" ngModel required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-row>
+            <button ion-button type="button" block (click)="tomarFoto()">
+              <ion-icon name="camera"></ion-icon>
+            </button>
+          </ion-row>
+          <ion-row>
+            <button ion-button block type="button" (click)="localizar()">
+              <ion-icon name="locate"></ion-icon>
+            </button>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid>
+      <!-- Mapa -->
+      <ion-row *ngIf="ubicacionLista">
+        <ion-col>
+          <agm-map [latitude]="ubicacion.lat" [longitude]="ubicacion.lng" [zoom]="13" [streetViewControl]="false" [disableDefaultUI]="true">
+            <agm-marker [latitude]="ubicacion.lat" [longitude]="ubicacion.lng"></agm-marker>
+          </agm-map>
+        </ion-col>
+      </ion-row>
+      <!-- Imagenes sacadas con el dispositivos -->
+      <ion-row>
+        <ion-slides>
+          <ion-slide *ngFor="let imagen of imagenes">
+            <img [src]="imagen" /> 
+          </ion-slide>
+        </ion-slides>
+      </ion-row>
+      <!-- rating -->
+      <ion-row text-center>
+        <ion-col>
+          <rating name="rating" ngModel></rating>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <button ion-button block type="submit" [disabled]="!formulario.valid || !ubicacionLista || imagenes.length <= 0">
+            AGREGAR RESTAURANTE
           </button>
-        </ion-row>
-        <ion-row>
-          <button ion-button block>
-            <ion-icon name="locate"></ion-icon>
-          </button>
-        </ion-row>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>
